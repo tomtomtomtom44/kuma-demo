@@ -1,0 +1,564 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 33,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "count by (kuma_source_service, request, response_status) (count_over_time({container=\"kuma-sidecar\"} |~ `\"(\\S*?)\" \"$service_name\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"` [$__range]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Nombre appels http entrants avec code retour par service source et requete",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time({container=\"kuma-sidecar\"} |~ `\"(\\S*?)\" \"$service_name\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"` | unwrap duration [$__range]) by (kuma_source_service, request)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Temps de réponses moyens appels http entrants",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "count by (kuma_destination_service, request, response_status) (count_over_time({container=\"kuma-sidecar\"} |~ `.*\"$service_name\" \"(\\S*?)\" \"(\\S*?)\" \"(\\S*?)\"$` != `\"- - -\"` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"` [$__range]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Nombre appels http sortants avec code retour par service de destination et requete",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time({container=\"kuma-sidecar\"} |~ `.*\"$service_name\" \"(\\S*?)\" \"(\\S*?)\" \"(\\S*?)\"$` != `\"- - -\"` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"` | unwrap duration [$__range]) by (kuma_destination_service, request)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Temps de réponses moyens appels http sortants",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "count by (kuma_destination_service) (count_over_time({container=\"kuma-sidecar\"} |~ `\"- - -\".*\"$service_name\" \"(\\S*?)\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"` [$__range]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Nombre appels tcp sortants par service de destination",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "count by (kuma_destination_ip) (count_over_time({container=\"kuma-sidecar\"} |~ `\"- - -\".*\"$service_name\" \"external\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"` [$__range]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Detail appels tcp sortants vers exterieur du mesh",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 5,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "{container=\"kuma-sidecar\"} |~ `\"(\\S*?)\" \"$service_name\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Detail access logs traffic http entrant",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 7,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "{container=\"kuma-sidecar\"} |~ `.*\"$service_name\" \"(\\S*?)\" \"(\\S*?)\" \"(\\S*?)\"$` != `\"- - -\"` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Detail access logs traffic http sortant",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafanacloud-logs"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 6,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "{container=\"kuma-sidecar\"} |~ `\"- - -\".*\"$service_name\" \"(\\S*?)\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"`",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafanacloud-logs"
+          },
+          "editorMode": "code",
+          "expr": "{container=\"kuma-sidecar\"} |~ `\"- - -\".*\"kuma_source_service\" \"(\\S*?)\" \"(\\S*?)\" \"(\\S*?)\"$` | pattern `<timestamp> <stream> <loglevel> [<start_time>] <mesh> \"<request>\" <response_status> <response_flags> <bytes_received> <bytes_send> <duration> <response_envoy_upstream_service_time> \"<request_forwarded_for>\" \"<request_user_agent>\" <traceID> \"<request_id>\" \"<authority>\" \"<kuma_source_service>\" \"<kuma_destination_service>\" \"<kuma_source_ip>\" \"<kuma_destination_ip>\"`",
+          "hide": false,
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "Detail access logs traffic tcp sortant",
+      "type": "logs"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "infineo-agentmanager_infineo_svc_80",
+          "value": "infineo-agentmanager_infineo_svc_80"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "grafanacloud-prom"
+        },
+        "definition": "label_values(kuma_io_service)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Service",
+        "multi": false,
+        "name": "service_name",
+        "options": [],
+        "query": {
+          "query": "label_values(kuma_io_service)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Access logs HTTP",
+  "uid": "b15d83d9-84fc-4619-bb5b-1923f642dc73",
+  "version": 17,
+  "weekStart": ""
+}
