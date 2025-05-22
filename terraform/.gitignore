@@ -1,5 +1,4 @@
 .terraform
-.terraform.lock.hcl
 dev-config
 terraform.tfstate
 .envrc
