@@ -2,17 +2,35 @@
 
 # Synchronize HCP secrets with kubernetes cluster
 
-kubectl create secret generic vso-demo-sp \
-    --namespace kuma-system \
-    --from-literal=clientID=xxx \
-    --from-literal=clientSecret=xxx
+first read secret from HCP into a local env file (exemple for grafana cloud secret loki dev)
+
+go into scripts folder
+
+Read secret into an env file (necessary to synchronize the JSON keys of the secret)
+
+python read_write_hcp_secret.py read --secret-name grafana_cloud_loki_dev --env-file .env.grafana.loki.dev --client-id xxx
+Enter HCP Client Secret: 
+Requesting API token from HCP...
+Successfully obtained API token.
+Fetching composite secret 'grafana_cloud_loki_dev'...
+Successfully fetched secret 'grafana_cloud_loki_dev'.
+Successfully wrote 3 entries to .env.grafana.loki.dev
+
+Synchronize generated env to a kubernetes secret
+
+python generate_vso_sync_yaml.py \
+    --env-file .env.grafana.loki.dev \
+    --hcp-secret-name grafana_cloud_loki_dev \
+    --hcp-app grafana \
+    --k8s-namespace logging \
+    --k8s-secret grafanaloki-secret \
+    --hcp-auth-client-id xxx \
+    --hcp-auth-client-secret xxx \
+    --hcp-auth-secret-name "vso-demo-sp" \
+    --sync-rule-name grafanaloki-sync-templated \
+    | kubectl apply -f -
+HCP auth credentials provided. Will generate K8s secret 'vso-demo-sp'.
+Generating YAML for Namespace 'logging' and HCPVaultSecretsApp 'linguaplay-sync-templated'.
+namespace/logging created
 secret/vso-demo-sp created
-
-cf Issue #423 on the hashicorp/vault-secrets-operator
-
-kubectl create namespace kuma-system
-namespace/kuma-system created
-
-python generate_vso_sync_yaml.py --env-file env.kuma.dev --hcp-secret-name kuma_tls_certificate_dev --k8s-secret kuma-tls-cert --k8s-namespace kuma-system --sync-rule-name kuma-sync-templated | kubectl apply -f -
-Generating YAML for 3 keys found in env.kuma.dev (HCP Secret: kuma_tls_certificate_dev)...
-hcpvaultsecretsapp.secrets.hashicorp.com/kuma-sync-templated created
+hcpvaultsecretsapp.secrets.hashicorp.com/linguaplay-sync-templated created
