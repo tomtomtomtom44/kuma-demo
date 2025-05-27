@@ -4,7 +4,7 @@ import requests, json, getpass, os, argparse, sys
 # --- Configuration (Constants that don't change per environment) ---
 HCP_ORG_ID               = "8c43a53b-ecb2-47b8-8218-6b6601517206"
 HCP_PROJECT_ID           = "754a4ec1-aaaf-4d97-b904-5aaaa5502034"
-HCP_APP_NAME             = "linguaplay" # Assuming app name is the same
+HCP_APP_NAME             = "grafana" # Assuming app name is the same
 HCP_API_BASE_URL         = "https://api.cloud.hashicorp.com"
 HCP_AUTH_URL             = "https://auth.idp.hashicorp.com/oauth2/token"
 HCP_SECRETS_API_VERSION  = "2023-11-28"
