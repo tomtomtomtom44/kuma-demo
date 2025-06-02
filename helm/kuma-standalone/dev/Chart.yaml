@@ -1,0 +1,7 @@
+apiVersion: v2
+name: kuma
+version: 1.0.0
+dependencies:
+  - name: kuma
+    repository: https://kumahq.github.io/charts
+    version: 2.4.4

@@ -1,0 +1,34 @@
+apiVersion: kuma.io/v1alpha1
+kind: MeshAccessLog
+metadata:
+  name: malhttp
+  namespace: kuma-system
+  labels:
+    kuma.io/mesh: default # optional, defaults to `default` if it isn't configured
+spec:
+  targetRef:
+    kind: MeshSubset
+    tags:
+      kuma.io/protocol: 'http'
+  from:
+  - targetRef:
+      kind: Mesh
+    default:
+      backends:
+      - type: File
+        file:
+          path: /dev/stdout
+          format:
+            type: Plain
+            plain: "[%START_TIME%] %KUMA_MESH% \"%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%\" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% \"%REQ(X-FORWARDED-FOR)%\" \"%REQ(USER-AGENT)%\" traceID:%REQ(X-B3-TRACEID)% \"%REQ(X-REQUEST-ID)%\" \"%REQ(:AUTHORITY)%\" \"%KUMA_SOURCE_SERVICE%\" \"%KUMA_DESTINATION_SERVICE%\" \"%KUMA_SOURCE_ADDRESS_WITHOUT_PORT%\" \"%UPSTREAM_HOST%\""
+  to:
+  - targetRef:
+      kind: Mesh
+    default:
+      backends:
+      - type: File
+        file:
+          path: /dev/stdout
+          format:
+            type: Plain
+            plain: "[%START_TIME%] %KUMA_MESH% \"%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%\" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% \"%REQ(X-FORWARDED-FOR)%\" \"%REQ(USER-AGENT)%\" traceID:%REQ(X-B3-TRACEID)% \"%REQ(X-REQUEST-ID)%\" \"%REQ(:AUTHORITY)%\" \"%KUMA_SOURCE_SERVICE%\" \"%KUMA_DESTINATION_SERVICE%\" \"%KUMA_SOURCE_ADDRESS_WITHOUT_PORT%\" \"%UPSTREAM_HOST%\""

@@ -1,0 +1,30 @@
+apiVersion: kuma.io/v1alpha1
+kind: Mesh
+metadata:
+  name: default
+spec:
+  mtls:
+    enabledBackend: ca-1
+    backends:
+    - name: ca-1
+      type: builtin
+      mode: PERMISSIVE
+  networking:
+    outbound:
+      passthrough: true
+  metrics:
+    enabledBackend: prometheus-1
+    backends:
+    - name: prometheus-1
+      type: prometheus
+      conf:
+        skipMTLS: true
+  tracing:
+    backends:
+    - conf:
+        url: http://tracing-grafana-agent-traces.tracing:9411/api/v2/spans
+      name: grafana-agent-traces
+      sampling: 100
+      type: zipkin
+    defaultBackend: grafana-agent-traces
+    

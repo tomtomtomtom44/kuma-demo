@@ -1,0 +1,16 @@
+{{- range .Values.externalServices }}
+---
+apiVersion: kuma.io/v1alpha1
+kind: ExternalService
+mesh: default
+metadata:
+  name: {{ .name }}
+spec:
+  tags:
+    kuma.io/service: {{ .service }}
+    kuma.io/protocol: {{ .protocol }}
+  networking:
+    address: {{ .address }}
+    tls:
+      enabled: {{ .tlsEnabled }}
+{{- end }}
