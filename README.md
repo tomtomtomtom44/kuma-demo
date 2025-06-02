@@ -37,7 +37,7 @@ hcpvaultsecretsapp.secrets.hashicorp.com/linguaplay-sync-templated created
 
 grafana monitoring
 
-python read_write_hcp_secret.py read --secret-name grafana_cloud_prometheus_dev --env-file .env.grafana.prometheus.dev --client-id I1Viml20JF0aKufXHPtk14Cnmma7i5iO
+python read_write_hcp_secret.py read --secret-name grafana_cloud_prometheus_dev --env-file .env.grafana.prometheus.dev --client-id xxx
 Enter HCP Client Secret: 
 Requesting API token from HCP...
 Successfully obtained API token.
@@ -61,3 +61,23 @@ Generating YAML for Namespace 'monitoring' and HCPVaultSecretsApp 'grafanaprom-s
 namespace/monitoring created
 secret/vso-demo-sp created
 hcpvaultsecretsapp.secrets.hashicorp.com/grafanaprom-sync-templated created
+
+grafana tracing
+
+python read_write_hcp_secret.py read --secret-name grafana_cloud_tempo_dev --env-file .env.grafana.tempo.dev --client-id xxx
+
+python generate_vso_sync_yaml.py \
+    --env-file .env.grafana.tempo.dev \
+    --hcp-secret-name grafana_cloud_tempo_dev \
+    --hcp-app grafana \
+    --k8s-namespace tracing \
+    --k8s-secret grafanatempo-secret \
+    --hcp-auth-client-id xxx \
+    --hcp-auth-client-secret xxx \
+    --hcp-auth-secret-name "vso-demo-sp" \
+    --sync-rule-name grafanatempo-sync-templated \
+    | kubectl apply -f -
+
+# Installing kuma mesh with helm
+
+helm install --namespace kuma-system -f values.yaml my-kuma-release .
