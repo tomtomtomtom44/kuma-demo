@@ -2,4 +2,7 @@
 dev-config
 terraform.tfstate
 .envrc
+.env*
+charts
+Chart.lock
 backend.tf

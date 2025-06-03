@@ -1,0 +1,9 @@
+apiVersion: v2
+name: logging
+version: 0.0.1
+dependencies:
+- name: "grafana-agent"
+  alias: "grafana-agent-logs"
+  condition: grafana-agent-logs.enabled
+  version: "~0.15.0"
+  repository: "https://grafana.github.io/helm-charts"

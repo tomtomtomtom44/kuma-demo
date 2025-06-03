@@ -81,3 +81,13 @@ python generate_vso_sync_yaml.py \
 # Installing kuma mesh with helm
 
 helm install --namespace kuma-system -f values.yaml my-kuma-release .
+
+# Installing grafana loki agent with helm
+
+helm install grafana-loki --namespace logging -f values.yaml .
+NAME: grafana-loki
+LAST DEPLOYED: Tue Jun  3 07:23:03 2025
+NAMESPACE: logging
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
