@@ -91,3 +91,7 @@ NAMESPACE: logging
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
+
+# Installing grafana prometheus agent with helm
+
+helm template grafana-monitoring --namespace monitoring -f values.yaml .
