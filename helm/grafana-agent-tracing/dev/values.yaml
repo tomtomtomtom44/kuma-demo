@@ -1,0 +1,41 @@
+grafana-agent-traces:
+  enabled: true
+  controller:
+    type: deployment
+  agent:
+    mode: static
+    extraPorts:
+    - name: otlp
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+    - name: zipkin
+      port: 9411
+      targetPort: 9411
+      protocol: TCP
+    extraArgs:
+    - -config.expand-env=true
+    envFrom:
+    - secretRef:
+        name: grafanatempo-secret
+    configMap:
+      content: |
+        traces:
+          configs:
+            - batch:
+                  send_batch_size: 1000
+                  timeout: 5s
+              name: default
+              receivers:
+                zipkin: {}
+                otlp:
+                  protocols:
+                    grpc: {}
+              remote_write:
+                - basic_auth:
+                      username: ${username}
+                      password: ${password}
+                  endpoint: ${url}
+                  retry_on_failure:
+                      enabled: false
+      create: true

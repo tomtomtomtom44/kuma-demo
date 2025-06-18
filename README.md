@@ -95,3 +95,8 @@ TEST SUITE: None
 # Installing grafana prometheus agent with helm
 
 helm template grafana-monitoring --namespace monitoring -f values.yaml .
+
+# Installing grafana tempo agent with helm
+
+helm template grafana-tracing --namespace tracing -f values.yaml .
+helm install grafana-tracing --namespace tracing -f values.yaml .
