@@ -36,3 +36,18 @@ variable "environment" {
   type        = string
   description = "environment (prod, dev, ...)"
 }
+
+variable "infisical_client_id" {
+  description = "The client ID for Infisical"
+  type        = string
+}
+
+variable "infisical_client_secret" {
+  description = "The client secret for Infisical"
+  type        = string
+}
+
+variable "infisical_project_id" {
+  description = "The ID of your Infisical project"
+  type        = string
+}

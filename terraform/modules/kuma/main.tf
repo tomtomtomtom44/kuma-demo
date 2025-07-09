@@ -1,3 +1,13 @@
+provider "infisical" {
+  host = "https://eu.infisical.com" # Only required if using self hosted instance of Infisical, default is https://app.infisical.com
+  auth = {
+    universal = {
+      client_id     = var.infisical_client_id
+      client_secret = var.infisical_client_secret
+    }
+  }
+}
+
 resource "tls_private_key" "control-plane-key" {
   algorithm   = var.private_key_algorithm
   ecdsa_curve = var.private_key_ecdsa_curve
@@ -26,4 +36,36 @@ resource "hcp_vault_secrets_secret" "cp_certificate" {
     "tls.crt"  = tls_self_signed_cert.control-plane-cert.cert_pem
     "tls.key" = tls_private_key.control-plane-key.private_key_pem
   })
+}
+
+# create infisical secret folder for kuma/tls
+resource "infisical_secret_folder" "kuma_tls_folder" {
+  project_id = var.infisical_project_id
+  environment_slug     = var.environment # e.g., "dev"
+  folder_path = "/"      # Using a path helps organize secrets
+  name = "kuma"
+}
+
+resource "infisical_secret" "kuma_ca_crt" {
+  workspace_id   = var.infisical_project_id
+  env_slug  = var.environment # e.g., "dev"
+  folder_path  = "/kuma"     # Using a path helps organize secrets
+  name  = "ca.crt"
+  value = tls_self_signed_cert.control-plane-cert.cert_pem
+}
+
+resource "infisical_secret" "kuma_tls_crt" {
+  workspace_id   = var.infisical_project_id
+  env_slug  = var.environment
+  folder_path  = "/kuma"
+  name  = "tls.crt"
+  value = tls_self_signed_cert.control-plane-cert.cert_pem
+}
+
+resource "infisical_secret" "kuma_tls_key" {
+  workspace_id   = var.infisical_project_id
+  env_slug  = var.environment
+  folder_path  = "/kuma"
+  name  = "tls.key"
+  value = tls_private_key.control-plane-key.private_key_pem
 }

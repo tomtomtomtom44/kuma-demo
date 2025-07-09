@@ -1,7 +1,7 @@
 terraform {
   required_providers {
-    hcp = {
-      source = "hashicorp/hcp"
+    infisical = {
+      source = "infisical/infisical"
     }
     tls = {
       source = "hashicorp/tls"
