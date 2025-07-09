@@ -2,38 +2,15 @@
 
 # Synchronize HCP secrets with kubernetes cluster
 
-first read secret from HCP into a local env file (exemple for grafana cloud secret loki dev)
+kuma tls cert
 
-go into scripts folder
+create secret store in default namespace :
 
-Read secret into an env file (necessary to synchronize the JSON keys of the secret)
+kubectl apply -f secret-store-kuma.yaml
 
-python read_write_hcp_secret.py read --secret-name grafana_cloud_loki_dev --env-file .env.grafana.loki.dev --client-id xxx
-Enter HCP Client Secret: 
-Requesting API token from HCP...
-Successfully obtained API token.
-Fetching composite secret 'grafana_cloud_loki_dev'...
-Successfully fetched secret 'grafana_cloud_loki_dev'.
-Successfully wrote 3 entries to .env.grafana.loki.dev
+create external secret in kuma-system namespace :
 
-Synchronize generated env to a kubernetes secret
-
-python generate_vso_sync_yaml.py \
-    --env-file .env.grafana.loki.dev \
-    --hcp-secret-name grafana_cloud_loki_dev \
-    --hcp-app grafana \
-    --k8s-namespace logging \
-    --k8s-secret grafanaloki-secret \
-    --hcp-auth-client-id xxx \
-    --hcp-auth-client-secret xxx \
-    --hcp-auth-secret-name "vso-demo-sp" \
-    --sync-rule-name grafanaloki-sync-templated \
-    | kubectl apply -f -
-HCP auth credentials provided. Will generate K8s secret 'vso-demo-sp'.
-Generating YAML for Namespace 'logging' and HCPVaultSecretsApp 'linguaplay-sync-templated'.
-namespace/logging created
-secret/vso-demo-sp created
-hcpvaultsecretsapp.secrets.hashicorp.com/linguaplay-sync-templated created
+kubectl apply -f external-secrets-kuma.yaml -n kuma-system
 
 grafana monitoring
 
