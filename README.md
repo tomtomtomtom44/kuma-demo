@@ -14,6 +14,15 @@ kubectl apply -f external-secrets-kuma.yaml -n kuma-system
 
 grafana monitoring
 
+create secret store in default namespace :
+
+kubectl apply -f secret-store-metrics.yaml
+
+create external secret in monitoring namespace :
+
+kubectl apply -f external-secrets-metrics.yaml -n monitoring
+
+
 python read_write_hcp_secret.py read --secret-name grafana_cloud_prometheus_dev --env-file .env.grafana.prometheus.dev --client-id xxx
 Enter HCP Client Secret: 
 Requesting API token from HCP...
