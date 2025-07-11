@@ -1,0 +1,3 @@
+[submodule "terraform/modules/grafanacloud"]
+    path = terraform/modules/grafanacloud
+    url = https://github.com/tomtomtomtom44/terraform-grafana-agent-tokens.git
