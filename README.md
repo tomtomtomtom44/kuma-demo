@@ -22,31 +22,15 @@ create external secret in monitoring namespace :
 
 kubectl apply -f external-secrets-prometheus.yaml -n monitoring
 
+## grafana logging
 
-python read_write_hcp_secret.py read --secret-name grafana_cloud_prometheus_dev --env-file .env.grafana.prometheus.dev --client-id xxx
-Enter HCP Client Secret: 
-Requesting API token from HCP...
-Successfully obtained API token.
-Fetching composite secret 'grafana_cloud_prometheus_dev'...
-Successfully fetched secret 'grafana_cloud_prometheus_dev'.
-Successfully wrote 2 entries to .env.grafana.prometheus.dev
+create secret store in default namespace :
 
-python generate_vso_sync_yaml.py \
-    --env-file .env.grafana.prometheus.dev \
-    --hcp-secret-name grafana_cloud_prometheus_dev \
-    --hcp-app grafana \
-    --k8s-namespace monitoring \
-    --k8s-secret grafanaprom-secret \
-    --hcp-auth-client-id xxx \
-    --hcp-auth-client-secret xxx \
-    --hcp-auth-secret-name "vso-demo-sp" \
-    --sync-rule-name grafanaprom-sync-templated \
-    | kubectl apply -f -
-HCP auth credentials provided. Will generate K8s secret 'vso-demo-sp'.
-Generating YAML for Namespace 'monitoring' and HCPVaultSecretsApp 'grafanaprom-sync-templated'.
-namespace/monitoring created
-secret/vso-demo-sp created
-hcpvaultsecretsapp.secrets.hashicorp.com/grafanaprom-sync-templated created
+kubectl apply -f secret-store-loki.yaml
+
+create external secret in logging namespace :
+
+kubectl apply -f external-secrets-loki.yaml -n logging
 
 grafana tracing
 
