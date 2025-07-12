@@ -32,21 +32,15 @@ create external secret in logging namespace :
 
 kubectl apply -f external-secrets-loki.yaml -n logging
 
-grafana tracing
+## grafana tracing
 
-python read_write_hcp_secret.py read --secret-name grafana_cloud_tempo_dev --env-file .env.grafana.tempo.dev --client-id xxx
+create secret store in default namespace :
 
-python generate_vso_sync_yaml.py \
-    --env-file .env.grafana.tempo.dev \
-    --hcp-secret-name grafana_cloud_tempo_dev \
-    --hcp-app grafana \
-    --k8s-namespace tracing \
-    --k8s-secret grafanatempo-secret \
-    --hcp-auth-client-id xxx \
-    --hcp-auth-client-secret xxx \
-    --hcp-auth-secret-name "vso-demo-sp" \
-    --sync-rule-name grafanatempo-sync-templated \
-    | kubectl apply -f -
+kubectl apply -f secret-store-tempo.yaml
+
+create external secret in tracing namespace :
+
+kubectl apply -f external-secrets-tempo.yaml -n tracing
 
 # Installing kuma mesh with helm
 
