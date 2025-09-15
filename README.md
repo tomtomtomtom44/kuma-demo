@@ -1,6 +1,80 @@
 # infra for Kuma service mesh demo
 
-# Synchronize HCP secrets with kubernetes cluster
+# Create infrastructure with terraform
+
+This repo uses Terragrunt to generate and manage Terraform backends and inputs per-environment. Terragrunt is used to keep backend/workspace naming and common inputs DRY.
+
+Quick steps (from repo root):
+
+- Install dependencies (terragrunt and terraform).
+
+- Pick an environment folder under `terraform/environments/` (for example `dev/grafanacloud` or `production/lke-k8s`).
+
+- Prepare environment variables used by modules (see `terraform/environments/*/*/variables.tf` and module READMEs). Example (use a local `.envrc` or export directly):
+
+```bash
+export TF_VAR_grafana_auth="<GRAFANA_API_KEY>"
+export TF_VAR_stack_name="<STACK_NAME>"
+export TF_VAR_stack_slug="<STACK_SLUG>"
+export TF_VAR_stack_region="eu"
+export TF_VAR_environment="dev"
+export TF_VAR_infisical_project_id="<INFISICAL_PROJECT_ID>"
+export TF_VAR_infisical_client_id="<INFISICAL_CLIENT_ID>"
+export TF_VAR_infisical_client_secret="<INFISICAL_CLIENT_SECRET>"
+export VAULT_ADDR="<VAULT_ADDR>"
+export VAULT_TOKEN="<VAULT_TOKEN>"
+```
+
+- Initialize and plan with Terragrunt (recommended so backend `backend.tf` is generated from `root.hcl`):
+
+```bash
+cd terraform/environments/<env>/<component>
+terragrunt init      # generates backend.tf and initializes Terraform Cloud remote backend
+terragrunt plan
+```
+
+- Apply (be careful with production):
+
+```bash
+terragrunt apply
+```
+
+Notes and details:
+
+- The repository `terraform/environments/root.hcl` generates a `backend.tf` using `locals.common_vars.env` combined with the folder path to build a Terraform Cloud workspace name. Example generated backend for `dev/grafanacloud` becomes `dev-grafanacloud` and points to Terraform Cloud org `DTProd-org`.
+
+- Each environment folder often contains a `terragrunt.hcl` that includes the repository `root.hcl` and a `main.tf` that instantiates the appropriate module under `terraform/modules/`.
+
+- To run all child modules for an environment in sequence, you can use:
+
+```bash
+terragrunt run-all init
+terragrunt run-all plan
+terragrunt run-all apply
+```
+
+- If a module is a git submodule (see `terraform/modules/grafanacloud`), update and commit the submodule pointer in the parent repo after changing the submodule state:
+
+```bash
+git submodule update --init --recursive
+cd terraform/modules/grafanacloud
+# make changes, commit and push to that submodule remote's branch
+git checkout main
+git merge <your-commit-hash>
+git push origin main
+cd ../../..
+git add terraform/modules/grafanacloud
+git add .gitmodules
+git commit -m "Update grafanacloud submodule"
+git push
+```
+
+- Backend is Terraform Cloud remote (hostname `app.terraform.io`) as generated in `root.hcl`.
+
+- See module `terraform/modules/grafanacloud/README.md` for module-specific env vars and dashboard layout.
+
+
+# Configure K8S Infisical secrets stores and external secrets
 
 ## kuma tls cert
 
@@ -42,11 +116,11 @@ create external secret in tracing namespace :
 
 kubectl apply -f external-secrets-tempo.yaml -n tracing
 
-# Installing kuma mesh with helm
+# Install kuma mesh with helm
 
 helm install --namespace kuma-system -f values.yaml my-kuma-release .
 
-# Installing grafana loki agent with helm
+# Install grafana loki agent with helm
 
 helm install grafana-loki --namespace logging -f values.yaml .
 NAME: grafana-loki
@@ -56,11 +130,11 @@ STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 
-# Installing grafana prometheus agent with helm
+# Install grafana prometheus agent with helm
 
 helm template grafana-monitoring --namespace monitoring -f values.yaml .
 
-# Installing grafana tempo agent with helm
+# Install grafana tempo agent with helm
 
 helm template grafana-tracing --namespace tracing -f values.yaml .
 helm install grafana-tracing --namespace tracing -f values.yaml .
