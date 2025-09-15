@@ -2,6 +2,11 @@ variable "token" {
   description = "Your Linode API Personal Access Token. (required)"
 }
 
+variable "ip" {
+  description = "Your public IP address to restrict access to the Kubernetes control plane and SSH. (required)"
+  type        = string
+}
+
 variable "lke_cluster_k8s_version" {
   description = "The Kubernetes version for the LKE cluster."
   type        = string

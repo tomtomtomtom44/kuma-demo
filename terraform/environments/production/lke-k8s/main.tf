@@ -6,5 +6,6 @@ module "lke-k8s" {
   lke_cluster_region      = var.lke_cluster_region
   lke_cluster_k8s_version = var.lke_cluster_k8s_version
   pools                   = var.pools
+  ip                      = var.ip
   tags                    = var.tags
 }
