@@ -4,7 +4,7 @@ lke_cluster_region="fr-par"
 tags=["production"]
 pools=[
   {
-    type : "g6-nanode-1"
+    type : "g6-standard-1"
     count : 2
   }
 ]

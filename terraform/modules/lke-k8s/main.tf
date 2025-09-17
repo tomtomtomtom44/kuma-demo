@@ -14,7 +14,7 @@ resource "linode_lke_cluster" "main" {
       acl {
         addresses {
                 ipv4 = ["${var.ipv4}/32"]
-                ipv6 = ["${var.ipv6}/32"]
+                ipv6 = [length(regexall("/", var.ipv6)) > 0 ? var.ipv6 : "${var.ipv6}/128"]
             }
         enabled = true
       }
@@ -49,7 +49,7 @@ resource "linode_firewall" "lke_firewall" {
     protocol = "TCP"
     ports    = "22"
     ipv4     = ["${var.ipv4}/32"]
-    ipv6     = ["${var.ipv6}/32"]
+    ipv6     = [length(regexall("/", var.ipv6)) > 0 ? var.ipv6 : "${var.ipv6}/128"]
   }
 
   inbound {
@@ -57,8 +57,8 @@ resource "linode_firewall" "lke_firewall" {
     action    = "ACCEPT"
     protocol  = "TCP"
     ports     = "80, 443"
-    ipv4     = [linode_nodebalancer.app.ipv4]
-    ipv6     = [linode_nodebalancer.app.ipv6]
+  ipv4 = [length(regexall("/", tostring(linode_nodebalancer.app.ipv4))) > 0 ? tostring(linode_nodebalancer.app.ipv4) : "${tostring(linode_nodebalancer.app.ipv4)}/32"]
+  ipv6 = [length(regexall("/", tostring(linode_nodebalancer.app.ipv6))) > 0 ? tostring(linode_nodebalancer.app.ipv6) : "${tostring(linode_nodebalancer.app.ipv6)}/128"]
   }
 
   inbound {
@@ -81,9 +81,8 @@ resource "linode_firewall" "lke_firewall" {
     label     = "allow-k8s-icmp"
     action    = "ACCEPT"
     protocol  = "ICMP"
-    ports     = "1-65535"
     ipv4     = ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
   }
 
-  linodes = flatten([for p in linode_lke_cluster.main.pool : p.nodes[*].id])
+  linodes = flatten([for p in linode_lke_cluster.main.pool : p.nodes[*].instance_id])
 }
