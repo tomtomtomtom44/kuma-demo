@@ -2,8 +2,13 @@ variable "token" {
   description = "Your Linode API Personal Access Token. (required)"
 }
 
-variable "ip" {
-  description = "Your public IP address to restrict access to the Kubernetes control plane and SSH. (required)"
+variable "ipv4" {
+  description = "Your public IPv4 address to restrict access to the Kubernetes control plane and SSH. (required)"
+  type        = string
+}
+
+variable "ipv6" {
+  description = "Your public IPv6 address to restrict access to the Kubernetes control plane and SSH. (required)"
   type        = string
 }
 

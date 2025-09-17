@@ -13,7 +13,8 @@ resource "linode_lke_cluster" "main" {
 
       acl {
         addresses {
-                ipv4 = ["${var.ip}/32"]
+                ipv4 = ["${var.ipv4}/32"]
+                ipv6 = ["${var.ipv6}/32"]
             }
         enabled = true
       }
@@ -47,7 +48,8 @@ resource "linode_firewall" "lke_firewall" {
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "22"
-    ipv4     = ["${var.ip}/32"]
+    ipv4     = ["${var.ipv4}/32"]
+    ipv6     = ["${var.ipv6}/32"]
   }
 
   inbound {
@@ -56,6 +58,7 @@ resource "linode_firewall" "lke_firewall" {
     protocol  = "TCP"
     ports     = "80, 443"
     ipv4     = [linode_nodebalancer.app.ipv4]
+    ipv6     = [linode_nodebalancer.app.ipv6]
   }
 
   inbound {
