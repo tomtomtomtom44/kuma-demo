@@ -29,13 +29,6 @@ resource "linode_lke_cluster" "main" {
     }
 }
 
-resource "linode_nodebalancer" "app" {
-  region = var.lke_cluster_region
-  label  = "${var.lke_cluster_label}-lb"
-  client_conn_throttle = 20
-  tags   = var.tags
-}
-
 resource "linode_firewall" "lke_firewall" {
   label = "${var.lke_cluster_label}-nodes-fw"
   tags  = var.tags
@@ -57,8 +50,8 @@ resource "linode_firewall" "lke_firewall" {
     action    = "ACCEPT"
     protocol  = "TCP"
     ports     = "80, 443"
-  ipv4 = [length(regexall("/", tostring(linode_nodebalancer.app.ipv4))) > 0 ? tostring(linode_nodebalancer.app.ipv4) : "${tostring(linode_nodebalancer.app.ipv4)}/32"]
-  ipv6 = [length(regexall("/", tostring(linode_nodebalancer.app.ipv6))) > 0 ? tostring(linode_nodebalancer.app.ipv6) : "${tostring(linode_nodebalancer.app.ipv6)}/128"]
+    ipv4      = ["0.0.0.0/0"]
+    ipv6      = ["::/0"]
   }
 
   inbound {
