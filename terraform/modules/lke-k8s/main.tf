@@ -68,5 +68,14 @@ resource "linode_firewall" "lke_firewall" {
     ipv4     = ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
   }
 
+  inbound {
+    label    = "allow-apiserver-to-webhooks-tcp"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "80, 443, 10250"
+    ipv4     = ["0.0.0.0/0"] # TEMP: replace with control-plane CIDRs when known
+    ipv6     = ["::/0"]
+  }
+  
   linodes = flatten([for p in linode_lke_cluster.main.pool : p.nodes[*].instance_id])
 }
