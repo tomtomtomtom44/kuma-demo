@@ -222,3 +222,38 @@ HEAD detached at 018c1c3
 
 **Summary:**  
 Detached HEAD is normal for submodules. To use the latest code, you must manually update the submodule and commit the new reference in the parent repo.
+
+# ArgoCD
+
+Using this documentation : https://www.arthurkoziel.com/setting-up-argocd-with-helm/
+
+helm repo add argo-cd https://argoproj.github.io/argo-helm
+"argo-cd" has been added to your repositories
+
+helm dep update argocd
+
+ ~/VSCode-devops/kuma-demo/helm (main)
+$ helm dep update argocd
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "ingress-nginx" chart repository
+...Successfully got an update from the "hashicorp" chart repository
+...Successfully got an update from the "external-secrets" chart repository
+...Successfully got an update from the "argo-cd" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Saving 1 charts
+Downloading argo-cd from repo https://argoproj.github.io/argo-helm
+Deleting outdated charts
+
+helm install argocd . -n argocd --create-namespace
+NAME: argocd
+LAST DEPLOYED: Mon Nov 17 08:09:03 2025
+NAMESPACE: argocd
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d && echo
+
+kubectl port-forward svc/argocd-server -n argocd 8090:443
