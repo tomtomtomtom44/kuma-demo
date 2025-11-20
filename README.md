@@ -257,3 +257,8 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath="{.data.password}" | base64 -d && echo
 
 kubectl port-forward svc/argocd-server -n argocd 8090:443
+
+créer le secret pour acces aux repos github :
+
+dans k8s
+kubectl apply -f git-access-argoCD.yaml -n argocd
