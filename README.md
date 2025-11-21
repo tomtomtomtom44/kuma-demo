@@ -262,3 +262,16 @@ créer le secret pour acces aux repos github :
 
 dans k8s
 kubectl apply -f git-access-argoCD.yaml -n argocd
+
+déploiement des applis argoCD
+
+helm template slack-github-agent-staging . -f values-staging.yaml
+helm template slack-github-agent-prod . -f values-prod.yaml
+
+helm install slack-github-agent-staging ./argocd-apps -f ./argocd-apps/values-staging.yaml --namespace argocd
+NAME: slack-github-agent-staging
+LAST DEPLOYED: Fri Nov 21 08:24:17 2025
+NAMESPACE: argocd
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
