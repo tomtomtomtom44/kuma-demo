@@ -1,7 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: slack-github-agent-staging
+  # Le nom de l'application sera dynamique en fonction de l'environnement
+  name: slack-github-agent-{{ .Values.environment }}
   namespace: argocd
 spec:
   project: default
@@ -12,10 +13,12 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-        - values.staging.yaml
+        # Le fichier de valeurs spécifique à l'environnement est maintenant une variable
+        - values.{{ .Values.environment }}.yaml
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: slack-github-agent-staging
+    # L'espace de noms de destination est également une variable
+    namespace: {{ .Values.destinationNamespace }}
   syncPolicy:
     automated:
       prune: true

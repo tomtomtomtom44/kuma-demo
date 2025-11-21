@@ -1,0 +1,4 @@
+apiVersion: v2
+name: argocd-application-deployer
+description: A Helm chart to deploy the slack-github-agent Argo CD Application
+version: 0.1.0

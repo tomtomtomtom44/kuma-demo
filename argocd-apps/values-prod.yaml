@@ -1,0 +1,5 @@
+# Nom de l'environnement
+environment: prod
+
+# Espace de noms de destination pour la production
+destinationNamespace: slack-github-agent

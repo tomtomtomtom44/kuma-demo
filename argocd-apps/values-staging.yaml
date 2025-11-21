@@ -1,0 +1,5 @@
+# Nom de l'environnement, utilisé pour construire les noms et les chemins
+environment: staging
+
+# Espace de noms où l'application sera déployée
+destinationNamespace: slack-github-agent-staging
