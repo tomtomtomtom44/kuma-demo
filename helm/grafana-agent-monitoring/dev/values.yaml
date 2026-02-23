@@ -16,7 +16,9 @@ grafana-agent-metrics:
     resources:
       requests:
         cpu: 50m
-        memory: 1300Mi
+        memory: 100Mi
+      limits:
+        memory: 200Mi
     configMap:
       create: true
       content: |

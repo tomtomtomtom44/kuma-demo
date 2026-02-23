@@ -120,6 +120,8 @@ kubectl apply -f external-secrets-tempo.yaml -n tracing
 
 helm install --namespace kuma-system -f values.yaml my-kuma-release .
 
+Sur LKE, pas assez de CPU => helm upgrade --install --namespace kuma-system -f values.yaml my-kuma-release . --set kuma.controlPlane.resources.requests.cpu=100m
+
 # Install grafana loki agent with helm
 
 helm install grafana-loki --namespace logging -f values.yaml .
