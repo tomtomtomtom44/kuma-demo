@@ -4,6 +4,13 @@ externalServices:
     protocol: http
     address: api.openai.com:443
     tlsEnabled: true
+  - name: github-api
+    service: github-api
+    protocol: http
+    address: api.github.com:443
+    tlsEnabled: true
+    # the mesh will capture and emit traces for requests sent to GitHub
+    # clients like Octokit can continue using standard HTTPS without changes
 kuma:
   controlPlane:
     mode: standalone
