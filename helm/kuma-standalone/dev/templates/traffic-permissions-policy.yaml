@@ -3,6 +3,11 @@ kind: TrafficPermission
 mesh: default
 metadata:
   name: allow-all-default
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: my-kuma-release
+    meta.helm.sh/release-namespace: kuma-system
 spec:
   sources:
   - match:
