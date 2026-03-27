@@ -24,7 +24,8 @@ resource "mongodbatlas_cluster" "cluster" {
   lifecycle {
     ignore_changes = [
       mongo_db_major_version,
-      provider_instance_size_name
+      provider_instance_size_name,
+      replication_specs
     ]
   }
 }
