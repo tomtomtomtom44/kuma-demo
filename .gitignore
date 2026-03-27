@@ -8,3 +8,4 @@ Chart.lock
 backend.tf
 k8s/universal-auth-credentials.yaml
 k8s/git-access-argoCD.yaml
+.terragrunt-cache/
