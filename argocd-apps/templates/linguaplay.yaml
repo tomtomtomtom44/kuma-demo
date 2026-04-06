@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linguaplay-{{ .Values.environment }}
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/tomtomtomtom44/my-chat-gpt.git'
+    targetRevision: HEAD
+    path: helm/linguaplay
+    helm:
+      valueFiles:
+        - values.yaml
+        - values.{{ .Values.environment }}.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: {{ .Values.linguaplayNamespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

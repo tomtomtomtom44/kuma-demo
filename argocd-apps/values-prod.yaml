@@ -3,3 +3,6 @@ environment: prod
 
 # Espace de noms de destination pour la production
 destinationNamespace: slack-github-agent
+
+# Espace de noms de l'application linguaplay
+linguaplayNamespace: linguaplay

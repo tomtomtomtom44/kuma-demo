@@ -3,3 +3,6 @@ environment: staging
 
 # Espace de noms où l'application sera déployée
 destinationNamespace: slack-github-agent-staging
+
+# Espace de noms de l'application linguaplay
+linguaplayNamespace: linguaplay-staging
