@@ -7,3 +7,6 @@ argo-cd:
     enabled: true
   server:
     extraArgs: []
+  configs:
+    params:
+      controller.diff.server.side: "true"
