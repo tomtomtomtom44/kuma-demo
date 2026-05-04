@@ -9,6 +9,11 @@ externalServices:
     protocol: http
     address: generativelanguage.googleapis.com:443
     tlsEnabled: true
+  - name: anthropic-api
+    service: anthropic-api
+    protocol: http
+    address: api.anthropic.com:443
+    tlsEnabled: true
   - name: github-api
     service: github-api
     protocol: http
