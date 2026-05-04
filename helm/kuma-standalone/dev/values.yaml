@@ -4,6 +4,11 @@ externalServices:
     protocol: http
     address: api.openai.com:443
     tlsEnabled: true
+  - name: gemini-api
+    service: gemini-api
+    protocol: http
+    address: generativelanguage.googleapis.com:443
+    tlsEnabled: true
   - name: github-api
     service: github-api
     protocol: http
