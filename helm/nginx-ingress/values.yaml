@@ -1,0 +1,13 @@
+ingress-nginx:
+  controller:
+    replicaCount: 1
+    config:
+      use-proxy-protocol: "true"
+    service:
+      type: LoadBalancer
+      externalTrafficPolicy: Local
+      nodePorts:
+        http: 31402
+        https: 30574
+      annotations:
+        service.beta.kubernetes.io/linode-loadbalancer-proxy-protocol: "v2"
