@@ -4,7 +4,8 @@ This Helm chart captures the configuration observed on the `nginx-ingress`
 release in namespace `default`:
 
 - ingress-nginx chart `4.13.2` (controller `1.13.2`)
-- one controller replica
+- two controller replicas, required to schedule on distinct nodes
+- rollout replaces one controller at a time to avoid requiring a third pod's CPU
 - a `LoadBalancer` Service using `externalTrafficPolicy: Local`
 - fixed HTTP/HTTPS NodePorts `31402` and `30574`
 - PROXY protocol enabled in the controller and on the Linode NodeBalancer
@@ -38,6 +39,7 @@ pinned to their observed values; the health-check NodePort (`32614`) is assigned
 by Kubernetes and may differ if the Service is recreated. Ensure the pinned
 NodePorts are available before installing this chart in another cluster.
 
-This reproduces the observed single-replica setup; it does not provide an
-ingress pod on every worker node. With `externalTrafficPolicy: Local`, a worker
-without a local controller pod can remain unhealthy in the NodeBalancer.
+Two replicas with required pod anti-affinity are configured for the current
+two-worker cluster. This provides a local controller endpoint on each node for
+`externalTrafficPolicy: Local`. If only one eligible worker is available, the
+second replica remains Pending until another eligible node is available.
