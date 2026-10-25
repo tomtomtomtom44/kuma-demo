@@ -19,7 +19,11 @@ resources:
   limits:
     memory: 128Mi
 
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: ScheduleAnyway
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: cloudflared
+            app.kubernetes.io/instance: cloudflared
+        topologyKey: kubernetes.io/hostname

@@ -10,7 +10,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
-      maxSurge: 1
+      maxSurge: 0
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "cloudflared.name" . }}
@@ -69,5 +69,5 @@ spec:
             readOnlyRootFilesystem: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      topologySpreadConstraints:
-        {{- toYaml .Values.topologySpreadConstraints | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}

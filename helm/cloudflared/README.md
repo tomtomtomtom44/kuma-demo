@@ -1,9 +1,14 @@
 # Cloudflare Tunnel connector
 
 This chart deploys two `cloudflared` connectors using the token synchronized by
-the `cloudflared` ExternalSecret in the `cloudflare` namespace. It creates no
-Service or public listener; the connectors establish outbound connections to
-Cloudflare.
+the `cloudflared` ExternalSecret in the `cloudflare` namespace. Required pod
+anti-affinity places the two connectors on distinct nodes. The rollout replaces
+one connector at a time without creating a temporary third pod. The chart
+creates no Service or public listener; connectors establish outbound
+connections to Cloudflare.
+
+Both pods require two eligible nodes. If only one is available, one connector
+will remain Pending by design rather than colocating both replicas.
 
 Apply the ExternalSecret first and wait until it is ready:
 
