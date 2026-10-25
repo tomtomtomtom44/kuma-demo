@@ -1,19 +1,19 @@
 # Nginx Ingress on LKE
 
-This Helm chart captures the configuration observed on the `nginx-ingress`
-release in namespace `default`:
+This Helm chart configures the `nginx-ingress` release in namespace `default`
+as an internal controller; public application traffic is routed by Cloudflare
+Tunnel directly to the application Services:
 
 - ingress-nginx chart `4.13.2` (controller `1.13.2`)
 - two controller replicas, required to schedule on distinct nodes
 - rollout replaces one controller at a time to avoid requiring a third pod's CPU
-- a `LoadBalancer` Service using `externalTrafficPolicy: Local`
-- fixed HTTP/HTTPS NodePorts `31402` and `30574`
-- PROXY protocol enabled in the controller and on the Linode NodeBalancer
+- a `ClusterIP` Service with no public NodeBalancer or NodePorts
+- PROXY protocol disabled because in-cluster clients use ordinary HTTP/HTTPS
 
-The current cluster state had the PROXY protocol ConfigMap value and Linode
-Service annotation in live resources, but neither was present in the release's
-stored Helm values. This chart records both settings so a future Helm upgrade
-re-applies them.
+The previous Service used a Linode NodeBalancer and PROXY protocol. Upgrading
+with these values changes it to `ClusterIP`; Kubernetes/LKE should then remove
+the NodeBalancer associated with that Service. The Cloudflare Tunnel routes
+must already point directly to the application Services before this change.
 
 ## Render and deploy
 
@@ -31,15 +31,15 @@ To deploy or upgrade the release:
 helm upgrade --install nginx-ingress . --namespace default --create-namespace
 ```
 
-The command above changes the live release and may trigger a NodeBalancer
-reconfiguration. Review the rendered output first. Kubernetes/Akamai assign the
-Service IP, NodePorts, and health-check NodePort, so those values are not pinned
-in this chart and may differ after recreation. The HTTP/HTTPS NodePorts are
-pinned to their observed values; the health-check NodePort (`32614`) is assigned
-by Kubernetes and may differ if the Service is recreated. Ensure the pinned
-NodePorts are available before installing this chart in another cluster.
+The command above changes the live release and is expected to remove its public
+NodeBalancer. Review the rendered output and confirm Cloudflare Tunnel is
+serving all required hostnames before deploying it.
 
 Two replicas with required pod anti-affinity are configured for the current
-two-worker cluster. This provides a local controller endpoint on each node for
-`externalTrafficPolicy: Local`. If only one eligible worker is available, the
-second replica remains Pending until another eligible node is available.
+two-worker cluster. If only one eligible worker is available, the second
+replica remains Pending until another eligible node is available.
+
+The existing `letsencrypt-http` ClusterIssuer still uses HTTP-01 through the
+`nginx` IngressClass. Keep the controller and its Ingress resources until
+certificate renewal has been migrated to another solver, such as DNS-01, or
+until you have otherwise verified that HTTP-01 is no longer needed.
